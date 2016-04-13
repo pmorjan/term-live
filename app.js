@@ -16,7 +16,8 @@ const pty = require('pty')
 
 const defaults = {
   title: 'term-live',
-  port: 8080
+  port: 8080,
+  shell: 'bash'
 }
 
 //
@@ -26,9 +27,10 @@ cmd
   .usage('[options] [shell]')
   .option('-l, --logfile <filename>', 'log http request to file')
   .option('-p, --port <port>', 'http listen port - defaults to ' + defaults.port, defaults.port, parseInt)
+  .option('-s, --shell <shell>', 'default shell: ' + defaults.shell, defaults.shell)
   .on('--help', function () {
     console.log('  Example:')
-    console.log('    term-live /bin/bash')
+    console.log('    term-live --shell ksh')
     console.log()
   })
   .parse(process.argv)
@@ -99,7 +101,7 @@ wss.on('error', function (err) {
 //
 // pty
 //
-const term = pty.spawn(cmd.args[0] || 'bash', [], {
+const term = pty.spawn(cmd.shell, [], {
   name: process.env.TERM,
   cols: process.stdout.columns,
   rows: process.stdout.rows,
